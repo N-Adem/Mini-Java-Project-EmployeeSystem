@@ -10,8 +10,7 @@ public class Trainee {
 	private LocalDate startDate;
 	private LocalDate endDate;
 	
-	public Trainee() {
-	}
+	public Trainee() {}
 	
 	//First name
 	public String getFirstName() {

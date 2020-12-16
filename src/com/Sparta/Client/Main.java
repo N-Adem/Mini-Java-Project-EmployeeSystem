@@ -3,42 +3,55 @@ package com.Sparta.Client;
 import com.Sparta.Network.PostgreSQL.*;
 import com.Sparta.Backend.SystemFeatures;
 import com.Sparta.Backend.SystemInput;
+import com.Sparta.Backend.MenuSelect;
 import com.Sparta.Backend.Trainee;
 
+
+/*I have abstracted all the code logic to a client server architectural model, where I would 
+ * the main only to be used for the programs main logic flow to be called. The client side should 
+ * only handle display rendering and the applications main loop.
+ * */
 public class Main {
 	
     public static void main(String[] args) {
     	boolean systemActive = true;
-    	boolean programExit = false;
     	JDBCPostgreSqlConnection connect = new JDBCPostgreSqlConnection();
-    	
-    	//Test application to database connection.
+    	Trainee trainee = new Trainee();
+    	//[Start state of the program connection to the db required before display.]
     	connect.startConnection();
-    	System.out.println("Some data");
-    	
-    	
-    	System.out.println("|-----------------------------------|");
-	    System.out.println("|Welcome To the user employee system|");
-	    System.out.println("|-----------------------------------|");
-	    
-	    //Test Code: check to see if the functionality adds a trainee to the database.
-	    System.out.println("Please enter first name:");
-	    Trainee tempTrainee = new Trainee();
-	    String firstName = SystemInput.InputToString();
-	    System.out.println("The firstName typed is " + firstName);
-	    tempTrainee.setFirstName(firstName);
-	    System.out.println("Please enter last name:");
-	    String lastName = SystemInput.InputToString();
-	    System.out.println("The lastName typed is " + lastName);
-	    tempTrainee.setLastName(lastName);
-	    System.out.println("Please enter stream:");
-	    String stream = SystemInput.InputToString();
-	    System.out.println("The stream typed is " + stream);
-	    tempTrainee.setLastName(stream);
-	    
-	    SystemFeatures.addTrainee(tempTrainee);
+    	  	
+    	//Main application logic.
+	    while(systemActive){    
+	    	AppDisplayContent.displayIntroduction();
+	    	MenuSelect option = SystemFeatures.menuOption();   	
+	    	switch(option) {
+	    	case INSERTTRAINEE:  
+	    		
+	    		SystemFeatures.addTrainee(SystemFeatures.createTrainee());
+	    		break;
+	    	case READTRAINEE:
+	    		//SystemFeatures.removeTrainee();
+	    		break;
+	    	case UPDATETRAINEE:
+	    		//SystemFeatures.updateTrainee();
+	    		break;
+	    	case DELETETRAINEE:
+	    		//SystemFeatures.deleteTrainee();
+	    		break;
+	    	case EXITPROGRAM: 
+	    		systemActive = SystemFeatures.endProgram();
+	    		break;
+	    	default: System.out.println("That command is invalid please try again.");
+	    		break;
+	    	}
+	    	//End of application 
+	    	if(systemActive == false) {
+	    		break;	
+	    	}    
+	    }
+	    //[Program has reached an exit state db connection ended].
+	    System.out.println(" ");
 	    connect.closeConnection();
-	    System.out.println("Program has ended.");
     }
     
     
