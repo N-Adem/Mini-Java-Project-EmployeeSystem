@@ -23,5 +23,19 @@ public class AppDisplayContent {
 	   	System.out.println("Instruction: To select from the menu please type an operation:");	
 	}
 	
+	/*public static void displayUpdateFeatures() {		
+		System.out.println(" ");
+	    System.out.println("|-----------------------------------|");
+	    System.out.println("|1.|First name                      |");
+	    System.out.println("|-----------------------------------|");
+	    System.out.println("|2.|Last name                       |");
+	    System.out.println("|-----------------------------------|");
+	    System.out.println("|3.|Stream                          |");
+	    System.out.println("|-----------------------------------|");
+	   
+	   	System.out.println(" ");	
+	   	System.out.println("Instruction: To select from the menu please type an operation:");	
+	}*/
+	
 }
 

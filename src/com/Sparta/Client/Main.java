@@ -16,18 +16,19 @@ public class Main {
     public static void main(String[] args) {
     	boolean systemActive = true;
     	JDBCPostgreSqlConnection connect = new JDBCPostgreSqlConnection();
-    	Trainee trainee = new Trainee();
+    	Trainee trainee;
     	//[Start state of the program connection to the db required before display.]
     	connect.startConnection();
     	  	
     	//Main application logic.
 	    while(systemActive){    
 	    	AppDisplayContent.displayIntroduction();
-	    	MenuSelect option = SystemFeatures.menuOption();   	
+	    	MenuSelect option = SystemFeatures.menuOption();
+
 	    	switch(option) {
 	    	case INSERTTRAINEE:  
-	    		
-	    		SystemFeatures.addTrainee(SystemFeatures.createTrainee());
+	    	    trainee = SystemFeatures.createTrainee();
+	    		SystemFeatures.addTrainee(trainee);
 	    		break;
 	    	case READTRAINEE:
 	    		//SystemFeatures.removeTrainee();

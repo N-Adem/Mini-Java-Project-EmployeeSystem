@@ -1,5 +1,6 @@
 package com.Sparta.Backend;
 
+import com.Sparta.Network.PostgreSQL.JDBCPostgreSqlConnection;
 import java.time.LocalDate;
 
 public class Trainee {
@@ -7,9 +8,10 @@ public class Trainee {
 	private String firstName;
 	private String lastName;
 	private String stream;
+	private String course;
 	private LocalDate startDate;
 	private LocalDate endDate;
-	
+	private int foreignKey;
 	public Trainee() {}
 	
 	//First name
@@ -36,6 +38,14 @@ public class Trainee {
 		this.stream = stream;
 	}
 	
+	//Stream
+	public String getCourse() {
+		return this.stream;
+	} 
+	public void setCourse(String course) {
+		this.stream = stream;
+	}
+	
 	//Start date
 	public LocalDate getStartDate() {
 		return this.startDate;
@@ -52,5 +62,15 @@ public class Trainee {
 	public void setEndDate(LocalDate endDate) {
 		//convert string to local date
 		this.endDate = endDate;
+	}
+	
+	//Foreign key
+	public int getForeignKey() {
+		return this.foreignKey;
+	}
+	
+	public void setForeignKey() {
+		JDBCPostgreSqlConnection fr = new JDBCPostgreSqlConnection();
+		this.foreignKey = fr.generateForeignKey(this.stream);
 	}
 }

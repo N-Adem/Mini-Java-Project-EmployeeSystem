@@ -1,7 +1,12 @@
 package com.Sparta.Test.Data;
 
-public class PopulateDB {
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+public class PopulateDB {
+	
 	
 	/*//This methods adds user there trainee table via the statement approach.
 	public void addTraineeToDb(String firstName, String lastName, String stream) {
@@ -20,22 +25,20 @@ public class PopulateDB {
 		}		
 	} */
 	
-	/*
+
 	//This method allows the user to add a new course to course db.  
-	public void addCourseToDb(Connection connection, String courseName, String specialality, 
-			LocalDateTime startDate, LocalDateTime endDate) {
+	public static void addCourseToDb(Connection connection) {
 		try {
 			String sql = "INSERT INTO course (name, specialism, startDate, end_date)" 
-					+ " VALUES ('C# course', 'development', '2020-09-03', '2020-12-03')";
-					
+					+ " VALUES ('C# course', 'development', '2020-09-03', '2020-12-03')";					
 			Statement state = connection.createStatement();
 			int row = state.executeUpdate(sql);	
 			if(row > 0) {
 				System.out.print("A new statement has been added.");
 			}	
 		}catch(SQLException ex) {
-			System.out.println("Insert");
+			System.out.println("Insert"); 
 		}		
-	} */
+	} 
 	
 }

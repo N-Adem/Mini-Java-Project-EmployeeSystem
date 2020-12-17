@@ -27,8 +27,15 @@ public class SystemFeatures {
 	    String stream = SystemInput.inputToString();
 	    System.out.println("The stream typed is " + stream);
 	    tempTrainee.setStream(stream);
-		return new Trainee();
+	    //tempTrainee.setCourse("C# course");
+		return tempTrainee;
 	}
+	
+	public static void updateTrainee() {
+		System.out.println("Please select what you want to update.");
+	}
+	
+	
 	//Gets called to end the program by returning a false flag.
 	public static boolean endProgram() {
 		System.out.println("System: Logging off .....");
