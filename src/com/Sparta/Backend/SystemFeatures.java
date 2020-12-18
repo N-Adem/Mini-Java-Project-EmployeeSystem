@@ -32,9 +32,17 @@ public class SystemFeatures {
 	}
 	
 	public static void updateTrainee() {
-		System.out.println("Please select what you want to update.");
+		int selection = SystemInput.inputToInt();
+		System.out.println("What is the first name of the trainee?");
+		String firstName = SystemInput.inputToString();
+		dbConnection.updateTraineeInDb(selection, firstName);
 	}
 	
+	public static void deleteTrainee() {
+		System.out.println("System: Please type in the name of the person you want to delete");
+		String name = SystemInput.inputToString();
+		dbConnection.deleteTraineeFromDb(name);
+	}
 	
 	//Gets called to end the program by returning a false flag.
 	public static boolean endProgram() {

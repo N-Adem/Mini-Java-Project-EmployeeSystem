@@ -19,6 +19,7 @@ public class JDBCPostgreSqlConnection {
 	private final String password = "SpartaDB";
 	private final String traineeDbName = "trainee";
 	private Connection connection;
+	PreparedStatement ps;
 	public JDBCPostgreSqlConnection() {}
 	
 	//Starts the database session.
@@ -84,21 +85,16 @@ public class JDBCPostgreSqlConnection {
 	} 
 	//-----------------------------------[Read feature]------------------------------------------------------------------------------------
 	//This method like the one above adds a trainee to the trainee db, but via the prepared statement technique.
-		public void readTraineeFromDb(String firstName, String lastName, String stream) {
+		public void readTraineeFromDb() {
 			//Note create a stream checker to then assign the right foreign key to the insert, also check that the null is correct per column.
 			try {
 				connection = DriverManager.getConnection(url,user,password);
-				PreparedStatement ps = connection.prepareStatement("insert into trainee (first_name, last_name, stream) "
-						+ "values (?, ?, ?)");
-				ps.setString(1, firstName);
-				ps.setString(2, lastName);
-				ps.setString(3, stream);
+				PreparedStatement ps = connection.prepareStatement("select * from trainee");
 				//ps.setInt(4, courseId);
-				int rowValue = ps.executeUpdate();
-				if(rowValue > 0) {
-					System.out.println("Trainee successfully added to DB.");
-				}else {
-					System.out.println("Trainee wasn't successfully added to DB.");
+				ResultSet readResult = ps.executeQuery();
+				while(readResult.next()) {
+					System.out.println("first name: " + readResult.getString("first_name") + ", last name: " 
+				+ readResult.getString("last_name") + ", stream: " + readResult.getString("stream"));
 				}
 			}catch(SQLException ex) {
 				System.out.println("Error: not able to add user to trainee DB " + ex);
@@ -107,23 +103,40 @@ public class JDBCPostgreSqlConnection {
 	
 		//-----------------------------------[Update feature]------------------------------------------------------------------------------------
 		//This method like the one above adds a trainee to the trainee db, but via the prepared statement technique.
-			public void updateTraineeInDb(int updateSelection) {
+			public void updateTraineeInDb(int updateSelection, String firstName) {
 				//Note create a stream checker to then assign the right foreign key to the insert, also check that the null is correct per column.
 				int selection = updateSelection;
-				switch(selection) {
-				case 1: 
-				case 2:
-				case 3:
-				case 4:
-					default: System.out.println("Your selection isn't valid please try again.");
-				}
+				String text = " ";
+				String notifyChange = " ";
 				try {
 					connection = DriverManager.getConnection(url,user,password);
-					PreparedStatement ps = connection.prepareStatement("update trainee set =''");
-					//ps.setInt(4, courseId);
+					switch(selection) {
+					case 1:
+						System.out.println("Please type the new first name below: ");
+						text = SystemInput.inputToString();
+						ps = connection.prepareStatement("update trainee set first_name = ? where first_name = ?");
+						notifyChange = "first name";
+						break;
+					case 2: 
+						System.out.println("Please type the new last name below: ");
+						text = SystemInput.inputToString();
+						ps = connection.prepareStatement("update trainee set last_name = ? where first_name = ?");
+						notifyChange = "last name";
+						break;
+					case 3:
+						System.out.println("Please type the new stream below: ");
+						text = SystemInput.inputToString();
+						ps = connection.prepareStatement("update trainee set stream = ? where first_name = ?");
+						notifyChange = "stream";
+						break;
+					default: System.out.println("Your selection isn't valid please try again.");
+						break;
+					}
+					ps.setString(1, text);
+					ps.setString(2, firstName);
 					int rowValue = ps.executeUpdate();
 					if(rowValue > 0) {
-						System.out.println("Trainee successfully added to DB.");
+						System.out.println("Trainee's " + notifyChange + " been updated.");
 					}else {
 						System.out.println("Trainee wasn't successfully added to DB.");
 					}
@@ -133,21 +146,17 @@ public class JDBCPostgreSqlConnection {
 			} 
 			//-----------------------------------[Delete feature]------------------------------------------------------------------------------------ 	
 			//This method like the one above adds a trainee to the trainee db, but via the prepared statement technique.
-			public void deleteTraineeFromDb(String firstName, String lastName, String stream) {
+			public void deleteTraineeFromDb(String firstName) {
 				//Note create a stream checker to then assign the right foreign key to the insert, also check that the null is correct per column.
 				try {
 					connection = DriverManager.getConnection(url,user,password);
-					PreparedStatement ps = connection.prepareStatement("insert into trainee (first_name, last_name, stream) "
-							+ "values (?, ?, ?)");
+					PreparedStatement ps = connection.prepareStatement("delete from trainee where first_name = ?");
 					ps.setString(1, firstName);
-					ps.setString(2, lastName);
-					ps.setString(3, stream);
-					//ps.setInt(4, courseId);
 					int rowValue = ps.executeUpdate();
-					if(rowValue > 0) {
-						System.out.println("Trainee successfully added to DB.");
+					if(rowValue < 0) {
+						System.out.println("Trainee wasn't successfully removed from db.");
 					}else {
-						System.out.println("Trainee wasn't successfully added to DB.");
+						System.out.println("Trainee wasn successfully removed from db.");
 					}
 				}catch(SQLException ex) {
 					System.out.println("Error: not able to add user to trainee DB " + ex);
