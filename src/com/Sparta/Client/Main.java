@@ -31,13 +31,15 @@ public class Main {
 	    		SystemFeatures.addTrainee(trainee);
 	    		break;
 	    	case READTRAINEE:
-	    		//SystemFeatures.removeTrainee();
+	    		AppDisplayContent.displayTrainees();
+	    		connect.readTraineeFromDb();
 	    		break;
 	    	case UPDATETRAINEE:
-	    		//SystemFeatures.updateTrainee();
+	    		AppDisplayContent.displayUpdateFeatures();
+	    		SystemFeatures.updateTrainee();
 	    		break;
 	    	case DELETETRAINEE:
-	    		//SystemFeatures.deleteTrainee();
+	    		SystemFeatures.deleteTrainee();
 	    		break;
 	    	case EXITPROGRAM: 
 	    		systemActive = SystemFeatures.endProgram();
