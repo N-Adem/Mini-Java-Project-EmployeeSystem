@@ -6,7 +6,6 @@ import com.Sparta.Backend.SystemInput;
 import com.Sparta.Backend.MenuSelect;
 import com.Sparta.Backend.Trainee;
 
-
 /*I have abstracted all the code logic to a client server architectural model, where I would 
  * the main only to be used for the programs main logic flow to be called. The client side should 
  * only handle display rendering and the applications main loop.
@@ -19,12 +18,12 @@ public class Main {
     	Trainee trainee;
     	//[Start state of the program connection to the db required before display.]
     	connect.startConnection();
-    	  	
+    	//Run this command when you need to populate the database.
+    	//connect.populateDB(); 	
     	//Main application logic.
 	    while(systemActive){    
 	    	AppDisplayContent.displayIntroduction();
 	    	MenuSelect option = SystemFeatures.menuOption();
-
 	    	switch(option) {
 	    	case INSERTTRAINEE:  
 	    	    trainee = SystemFeatures.createTrainee();

@@ -7,7 +7,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.sql.Date;
 
 import com.Sparta.Test.Data.PopulateDB;
 import com.Sparta.Backend.SystemInput;
@@ -20,6 +22,7 @@ public class JDBCPostgreSqlConnection {
 	private final String traineeDbName = "trainee";
 	private Connection connection;
 	PreparedStatement ps;
+	ResultSet resultSet = null;
 	public JDBCPostgreSqlConnection() {}
 	
 	//Starts the database session.
@@ -63,16 +66,22 @@ public class JDBCPostgreSqlConnection {
 	}
 	//-----------------------------------[Create feature]------------------------------------------------------------------------------------
 	//This method like the one above adds a trainee to the trainee db, but via the prepared statement technique.
-	public void addTraineeToDb(String firstName, String lastName, String stream) {
+	public void addTraineeToDb(String firstName, String lastName, String stream, int foreignKey, 
+			LocalDate startDate, LocalDate endDate) {
 		//Note create a stream checker to then assign the right foreign key to the insert, also check that the null is correct per column.
 		try {
+			Date sqlStartDate = Date.valueOf(startDate);
+			Date sqlEndDate = Date.valueOf(endDate);
 			connection = DriverManager.getConnection(url,user,password);
-			PreparedStatement ps = connection.prepareStatement("insert into trainee (first_name, last_name, stream) "
-					+ "values (?, ?, ?)");
+			PreparedStatement ps = connection.prepareStatement("insert into trainee (first_name, last_name, stream, course_id, "
+					+ "start_date, end_date) "
+					+ "values (?, ?, ?, ?, ?, ?)");
 			ps.setString(1, firstName);
 			ps.setString(2, lastName);
 			ps.setString(3, stream);
-			//ps.setInt(4, courseId);
+			ps.setInt(4, foreignKey);
+			ps.setDate(5, sqlStartDate);
+			ps.setDate(6, sqlEndDate);
 			int rowValue = ps.executeUpdate();
 			if(rowValue > 0) {
 				System.out.println("Trainee successfully added to DB.");
@@ -167,12 +176,54 @@ public class JDBCPostgreSqlConnection {
 	public void populateDB() {
 		try {
 			connection = DriverManager.getConnection(url,user,password);
-			PopulateDB.addCourseToDb(connection);
+			PopulateDB.addCoursesToDb(connection);
 		}catch(SQLException ex) {
 			System.out.println("");
 		}
 	
 	}
+	
+	//Retrieves the start date from the database.
+	public LocalDate retreiveStartDateFromDb(int traineeForeignKey) {
+		LocalDate startDate = null;
+		try {
+			connection = DriverManager.getConnection(url,user,password);
+			String selectStartDateQuery = "select start_date from course where id = ?";
+			PreparedStatement ps = connection.prepareStatement(selectStartDateQuery);
+			ps.setInt(1, traineeForeignKey);
+			this.resultSet = ps.executeQuery();
+			if(this.resultSet.next()) {
+				startDate = this.resultSet.getDate("start_date").toLocalDate();
+				return startDate;
+			}else {
+				System.out.println("System: Start date wasn't retrieved from database properly.");
+			}
+		}catch(SQLException ex) {
+			System.out.println("Error: Not able to rerieve start date from db. " + ex);
+		}	
+		return startDate;
+	} 
+	
+	//Retrieves the start date from the database.
+		public LocalDate retreiveEndDateFromDb(int traineeForeignKey) {
+			LocalDate startDate = null;
+			try {
+				connection = DriverManager.getConnection(url,user,password);
+				String selectStartDateQuery = "select end_date from course where id = ?";
+				PreparedStatement ps = connection.prepareStatement(selectStartDateQuery);
+				ps.setInt(1, traineeForeignKey);
+				this.resultSet = ps.executeQuery();
+				if(this.resultSet.next()) {
+					startDate = this.resultSet.getDate("end_date").toLocalDate();
+					return startDate;
+				}else {
+					System.out.println("System: End date wasn't retrieved from database properly.");
+				}
+			}catch(SQLException ex) {
+				System.out.println("Error: Not able to rerieve end date from db. " + ex);
+			}	
+			return startDate;
+		} 
 	
 	//Check whether a table exists in the Sparta_Management DB.
 	private void tableExists(Connection connection, String tableName) {
