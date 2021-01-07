@@ -2,6 +2,9 @@ package com.Sparta.Backend;
 
 import com.Sparta.Network.PostgreSQL.JDBCPostgreSqlConnection;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Trainee {
 	
@@ -12,6 +15,17 @@ public class Trainee {
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private int foreignKey;
+   	private final int startDateMax = 3;
+   	
+   	private final Map<String, Integer> traineeForeignKey = new HashMap<String, Integer>(){{
+   		put("c# developer", 2);
+   		put("c# tester", 3);
+   		put("java developer", 4);
+   		put("java tester", 5);
+   		put("data analyst", 6);
+   		put("business analyst", 7);
+   	}};
+   	
 	public Trainee() {}
 	
 	//First name
@@ -40,10 +54,10 @@ public class Trainee {
 	
 	//Stream
 	public String getCourse() {
-		return this.stream;
+		return this.course;
 	} 
 	public void setCourse(String course) {
-		this.stream = stream;
+		this.course = course;
 	}
 	
 	//Start date
@@ -67,10 +81,28 @@ public class Trainee {
 	//Foreign key
 	public int getForeignKey() {
 		return this.foreignKey;
+	}	
+	public void setForeignKey(String course) {
+		if(this.traineeForeignKey.get(course) != null && 
+				this.traineeForeignKey.get(course) > 0) {
+			this.foreignKey = this.traineeForeignKey.get(course);
+			System.out.println("The value is = " + this.foreignKey);
+		}else {
+			System.out.println("System: the value can't be retrieved");
+		}		
 	}
 	
-	public void setForeignKey() {
-		JDBCPostgreSqlConnection fr = new JDBCPostgreSqlConnection();
-		this.foreignKey = fr.generateForeignKey(this.stream);
-	}
+	//This method checks whether the trainees start date is valid.
+    public boolean checkValidStartDate(LocalDate startDate) {	
+    	//Temporary start date retrieve start date from database once set.
+    	LocalDate courseStartDate = LocalDate.of(2021, 1, 4);
+    	long lengthOfDays = ChronoUnit.DAYS.between(courseStartDate, startDate);
+    	if(lengthOfDays <= startDateMax) {
+    		return true;
+    	}else {
+    		return false;	
+    	}
+    }   
+
+    
 }

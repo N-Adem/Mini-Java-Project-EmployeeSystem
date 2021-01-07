@@ -1,5 +1,7 @@
 package com.Sparta.Backend;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import com.Sparta.Backend.Trainee;
 import com.Sparta.Network.PostgreSQL.JDBCPostgreSqlConnection;
 
@@ -10,10 +12,12 @@ public class SystemFeatures {
 	
 	public static void addTrainee(Trainee trainee) {
 		dbConnection = new JDBCPostgreSqlConnection();
-		dbConnection.addTraineeToDb(trainee.getFirstName(), trainee.getLastName(), trainee.getStream());
+		dbConnection.addTraineeToDb(trainee.getFirstName(), trainee.getLastName(), trainee.getStream(), 
+				trainee.getForeignKey(), trainee.getStartDate(), trainee.getEndDate());
 	}
 	
 	public static Trainee createTrainee() {
+		dbConnection = new JDBCPostgreSqlConnection();
 		Trainee tempTrainee = new Trainee();
 	    System.out.println("Please enter first name:");
 	    String firstName = SystemInput.inputToString();
@@ -27,7 +31,10 @@ public class SystemFeatures {
 	    String stream = SystemInput.inputToString();
 	    System.out.println("The stream typed is " + stream);
 	    tempTrainee.setStream(stream);
-	    //tempTrainee.setCourse("C# course");
+	    //This code automatically gets sets by using the foreign key, and populate the trainee object.
+	    tempTrainee.setForeignKey(tempTrainee.getStream());
+	    tempTrainee.setStartDate(dbConnection.retreiveStartDateFromDb(tempTrainee.getForeignKey()));
+	    tempTrainee.setEndDate(dbConnection.retreiveEndDateFromDb(tempTrainee.getForeignKey()));
 		return tempTrainee;
 	}
 	
